@@ -1,0 +1,10 @@
+import { ForgotPasswordDto } from './forgot-password.dto';
+export { CreateUserDto } from '@modules/auth/dto/create-user.dto';
+export { LoginUserDto } from '@modules/auth/dto/login-user.dto';
+export { UpdateUserDto } from '@modules/auth/dto/update-user.dto';
+export { UserResponseDto } from '@modules/auth/dto/user-response.dto';
+export { ActivateUserDto } from '@modules/auth/dto/activate-user.dto';
+export { ChangePasswordDto } from '@modules/auth/dto/change-password.dto';
+export { ForgotPasswordDto } from '@modules/auth/dto/forgot-password.dto';
+export { ResetPasswordDto } from '@modules/auth/dto/reset-password.dto';
+export { ResendActivationDto  } from '@modules/auth/dto/resend-activation.dto';
