@@ -8,13 +8,19 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { EmailModule } from '@modules/email/email.module';
 import { ThrottlerConfigModule } from '@/common/throttler/throttler.module';
 import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
+import { StorageModule } from '@modules/storage/storage.module';
+import { ProductImagesModule } from '@modules/product-images/product-images.module';
+import { CatalogModule } from './catalog/catalog.module';
 
 @Module({
   imports: [
     AppLoggerModule,
     AuthModule,
+    CatalogModule,
     DatabaseModule,
     EmailModule,
+    ProductImagesModule,
+    StorageModule,
     ThrottlerConfigModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -25,7 +31,6 @@ import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
       // Validación de variables de entorno
       validationSchema,
     }),
-
   ],
   providers: [HttpExceptionFilter, LoggingInterceptor],
 })

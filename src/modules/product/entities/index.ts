@@ -1,0 +1,1 @@
+export {productsSchema} from '@modules/product/entities/product.entity';

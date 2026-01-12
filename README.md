@@ -4,13 +4,16 @@
 
 Si usas Windows, asegúrate de correr los scripts con `cross-env` para evitar errores.
 
-
 ## Variables de Entorno
 
 Este proyecto usa archivos `.env` para configurar variables según el entorno:
 
 - `.env.development` — configuración para desarrollo
 - `.env.production` — configuración para producción
+
+Nota:
+
+S3_BUCKET_NAME debe coincidir con el bucket creado previamente en MinIO o AWS S3.
 
 ## Scripts npm
 

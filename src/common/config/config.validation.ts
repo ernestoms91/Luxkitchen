@@ -24,4 +24,17 @@ export const validationSchema = Joi.object({
     .truthy('true', 1, 'TRUE')
     .falsy('false', 0, 'FALSE')
     .default(false),
+  S3_ENDPOINT: Joi.string().uri().required(),
+  S3_REGION: Joi.string().required(),
+  S3_ACCESS_KEY: Joi.string().required(),
+  S3_SECRET_KEY: Joi.string().required(),
+  S3_BUCKET_NAME: Joi.string().required(),
+  S3_FORCE_PATH_STYLE: Joi.boolean()
+    .truthy('true', 1, 'TRUE')
+    .falsy('false', 0, 'FALSE')
+    .default(true),
+  S3_PUBLIC_URL: Joi.string().uri().required(),
+  PRODUCT_IMAGES_MAX_COUNT: Joi.number().default(6),
+  PRODUCT_IMAGE_MAX_SIZE: Joi.number().default(5 * 1024 * 1024), // 5MB
+  PRODUCT_IMAGE_ALLOWED_TYPES: Joi.string()
 });
