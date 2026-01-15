@@ -47,12 +47,16 @@ export class ProductImagesService {
     dto: CreateProductImageDto;
     file: Express.Multer.File;
   }): Promise<ProductImage> {
-    const { productId, order, fileName, contentType } = dto;
+    const { productId, order } = dto;
+
+    if (!file?.buffer) {
+      throw new BadRequestException('Invalid file upload');
+    }
 
     const maxImages =
       this.configService.get<number>('PRODUCT_IMAGES_MAX_COUNT') ?? 6;
 
-    // 1. Validar si ya se alcanzó el límite máximo
+    // Contar imágenes existentes
     const [{ total }] = await this.database
       .select({ total: count() })
       .from(productImagesSchema)
@@ -66,34 +70,34 @@ export class ProductImagesService {
       );
     }
 
-    // 1. Subir archivo a S3 / MinIO
+    // Datos del archivo
+    const fileName = file.originalname;
+    const contentType = file.mimetype;
+
+    // Bucket desde config (¡GENÉRICO!)
+    const bucketName =
+      this.configService.get<string>('STORAGE_BUCKET') ?? 'luxkitchen';
+
+    // Subida a storage
     const key = `products/${productId}/${Date.now()}-${fileName}`;
 
-    const url = await this.storageService.uploadFile(
-      key,
-      file.buffer,
-      contentType,
-    );
+    await this.storageService.uploadFile(key, file.buffer, contentType); // No necesitamos el return
 
-    // 2. Transacción para manejar order correctamente
+    // ✅ URL construida manualmente (funciona con cualquier bucket)
+    const publicUrl = `/${bucketName}/${key}`;
+
+    console.log('PUBLIC URL:', publicUrl);
+
     return await this.database.transaction(async (tx) => {
-      // Contar imágenes actuales
-      const [{ total }] = await tx
-        .select({ total: count() })
-        .from(productImagesSchema)
-        .where(eq(productImagesSchema.productId, productId));
+      const newOrder = order === undefined ? imagesCount : order;
 
-      const imagesCount = Number(total);
-
-      const newOrder = order ?? imagesCount;
-
-      if (newOrder >= imagesCount) {
+      if (newOrder < 0 || newOrder > imagesCount) {
         throw new BadRequestException(
           `Order must be between 0 and ${imagesCount}`,
         );
       }
 
-      // Desplazar órdenes existentes
+      // Desplazar órdenes
       await tx
         .update(productImagesSchema)
         .set({
@@ -106,12 +110,11 @@ export class ProductImagesService {
           ),
         );
 
-      // Insertar imagen
       const [image] = await tx
         .insert(productImagesSchema)
         .values({
           productId,
-          url,
+          url: publicUrl, // ← URL limpia y genérica
           order: newOrder,
         })
         .returning();
@@ -240,7 +243,7 @@ export class ProductImagesService {
 
   async deleteImage(imageId: string): Promise<void> {
     return this.database.transaction(async (tx) => {
-      // 1. Buscar imagen para obtener URL y productId
+      // 1. Obtener imagen para validar existencia y obtener URL y productId
       const [image] = await tx
         .select()
         .from(productImagesSchema)
@@ -251,24 +254,35 @@ export class ProductImagesService {
         throw new NotFoundException(`Image with ID ${imageId} not found`);
       }
 
-      // 2. Borrar imagen de storage (S3/MinIO)
-      // Extraemos la key desde la URL (asumiendo url = endpoint/bucket/key)
+      // 2. Extraer key del archivo para borrar en storage (asumiendo URL con formato endpoint/bucket/key)
       const bucketName = this.configService.get<string>('S3_BUCKET_NAME');
-      // Extraer key: quitar "http(s)://endpoint/bucketName/" de la url
       const key = image.url.replace(
         new RegExp(`^https?://[^/]+/${bucketName}/`),
         '',
       );
 
+      // 3. Borrar archivo en storage (S3/MinIO)
       await this.storageService.deleteFile(key);
 
-      // 3. Borrar registro de imagen en BD
+      // 4. Borrar registro de la imagen en la base de datos
       await tx
         .delete(productImagesSchema)
         .where(eq(productImagesSchema.id, imageId))
         .execute();
 
-      // Opcional: podrías manejar reordenamiento aquí si es necesario
+      // 5. Reordenar las órdenes de otras imágenes si fuera necesario
+      await tx
+        .update(productImagesSchema)
+        .set({
+          order: sql`${productImagesSchema.order} - 1`,
+        })
+        .where(
+          and(
+            eq(productImagesSchema.productId, image.productId),
+            gt(productImagesSchema.order, image.order),
+          ),
+        )
+        .execute();
     });
   }
 }

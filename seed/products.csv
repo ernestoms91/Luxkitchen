@@ -1,0 +1,21 @@
+id,slug,title,description,location,price,stock,active,created_at,updated_at,category_id
+550e8400-e29b-41d4-a716-446655440001,iphone-15-pro,Apple iPhone 15 Pro,Último modelo de iPhone con chip A17 Pro,Buenos Aires,1249.99,50,true,2024-03-01 09:00:00,2024-03-01 09:00:00,6
+550e8400-e29b-41d4-a716-446655440002,thinkpad-x1,Lenovo ThinkPad X1 Carbon,Laptop empresarial ultraligera 14",Ciudad de México,1899.99,30,true,2024-03-01 09:05:00,2024-03-01 09:05:00,7
+550e8400-e29b-41d4-a716-446655440003,camiseta-algodon,Camiseta de Algodón 100%,Camiseta básica de algodón orgánico,Lima,24.99,200,true,2024-03-01 09:10:00,2024-03-01 09:10:00,8
+550e8400-e29b-41d4-a716-446655440004,jeans-slim,Jeans Slim Fit,Jeans ajustados color azul,Santiago,59.99,150,true,2024-03-01 09:15:00,2024-03-01 09:15:00,9
+550e8400-e29b-41d4-a716-446655440005,sofa-cuero,Sofá de Cuero,Sofá de cuero genuino 3 plazas,Bogotá,899.99,15,true,2024-03-01 09:20:00,2024-03-01 09:20:00,10
+550e8400-e29b-41d4-a716-446655440006,juego-cuchillos,Juego de Cuchillos Profesional,Set de 6 cuchillos de acero inoxidable,Quito,89.99,40,true,2024-03-01 09:25:00,2024-03-01 09:25:00,11
+550e8400-e29b-41d4-a716-446655440007,balon-futbol,Balón de Fútbol Oficial,Balón talla 5 para competencia,Montevideo,49.99,100,true,2024-03-01 09:30:00,2024-03-01 09:30:00,12
+550e8400-e29b-41d4-a716-446655440008,balon-basquet,Balón de Baloncesto,Balón de baloncesto profesional,Caracas,39.99,80,true,2024-03-01 09:35:00,2024-03-01 09:35:00,13
+550e8400-e29b-41d4-a716-446655440009,cien-anos-soledad,Cien Años de Soledad,Novela de Gabriel García Márquez,Madrid,19.99,300,true,2024-03-01 09:40:00,2024-03-01 09:40:00,14
+550e8400-e29b-41d4-a716-446655440010,sapiens-brev,Sapiens: Breve Historia,Sapiens de Yuval Noah Harari,Barcelona,24.99,250,true,2024-03-01 09:45:00,2024-03-01 09:45:00,15
+550e8400-e29b-41d4-a716-446655440011,samsung-s24,Samsung Galaxy S24,Smartphone Android con IA,Seúl,999.99,75,true,2024-03-02 10:00:00,2024-03-02 10:00:00,6
+550e8400-e29b-41d4-a716-446655440012,hp-spectre,HP Spectre x360,Laptop convertible 2 en 1,Tokio,1499.99,25,true,2024-03-02 10:05:00,2024-03-02 10:05:00,7
+550e8400-e29b-41d4-a716-446655440013,polo-manga-corta,Polo Manga Corta,Polo de piqué para hombre,Miami,34.99,180,true,2024-03-02 10:10:00,2024-03-02 10:10:00,8
+550e8400-e29b-41d4-a716-446655440014,shorts-deportivos,Shorts Deportivos,Shorts para running y gimnasio,Los Ángeles,29.99,120,true,2024-03-02 10:15:00,2024-03-02 10:15:00,9
+550e8400-e29b-41d4-a716-446655440015,silla-oficina,Silla de Oficina Ergonómica,Silla con soporte lumbar ajustable,Chicago,299.99,35,true,2024-03-02 10:20:00,2024-03-02 10:20:00,10
+550e8400-e29b-41d4-a716-446655440016,olla-presion,Olla a Presión,Olla a presión de acero inoxidable 6L,Dallas,79.99,60,true,2024-03-02 10:25:00,2024-03-02 10:25:00,11
+550e8400-e29b-41d4-a716-446655440017,zapatos-futbol,Zapatos de Fútbol,Botines para césped artificial,Houston,89.99,90,true,2024-03-02 10:30:00,2024-03-02 10:30:00,12
+550e8400-e29b-41d4-a716-446655440018,canasta-basquet,Canasta de Baloncesto,Canasta regulable para exteriores,Phoenix,199.99,20,true,2024-03-02 10:35:00,2024-03-02 10:35:00,13
+550e8400-e29b-41d4-a716-446655440019,1984-george-orwell,1984 - George Orwell,Novela distópica clásica,London,14.99,400,true,2024-03-02 10:40:00,2024-03-02 10:40:00,14
+550e8400-e29b-41d4-a716-446655440020,breve-historia-tiempo,Breve Historia del Tiempo,De Stephen Hawking,Paris,22.99,220,true,2024-03-02 10:45:00,2024-03-02 10:45:00,15

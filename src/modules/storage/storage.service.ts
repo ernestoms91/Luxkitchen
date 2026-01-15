@@ -16,7 +16,7 @@ export class StorageService {
     private readonly s3: S3Client,
     private readonly config: ConfigService,
   ) {
-    this.bucket = this.config.get<string>('S3_BUCKET')!;
+    this.bucket = this.config.get<string>('S3_BUCKET_NAME')!;
   }
 
   // Método para subir archivo a S3/MinIO

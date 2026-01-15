@@ -22,7 +22,8 @@ import {
   ProductImageResponseDto,
   UpdateProductImageOrderDto,
 } from '@modules/product-images/dto';
-import { ImageUpload } from '@modules/product-images/decorators/image-upload.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ProductImagePipe } from './pipes/product-image.pipe';
 
 type ProductImage = InferSelectModel<typeof productImagesSchema>;
 
@@ -32,14 +33,11 @@ export class ProductImagesController {
 
   @Post()
   @Auth()
-  @ImageUpload()
+  @UseInterceptors(FileInterceptor('file'))
   async upload(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(ProductImagePipe) file: Express.Multer.File,
     @Body() dto: CreateProductImageDto,
   ): Promise<SuccessResponseDto<ProductImageResponseDto>> {
-    if (!file) {
-      throw new BadRequestException('Invalid image type or image too large');
-    }
 
     const image = await this.productImagesService.uploadImage({
       dto,
@@ -66,7 +64,7 @@ export class ProductImagesController {
     };
   }
 
-  @Put(':id/order')
+  @Put('update/:id')
   @Auth()
   async updateOrder(
     @Param('id', ParseUUIDPipe) imageId: string,
@@ -81,7 +79,7 @@ export class ProductImagesController {
     };
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   @Auth()
   async delete(
     @Param('id', ParseUUIDPipe) imageId: string,

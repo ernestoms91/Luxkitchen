@@ -15,7 +15,11 @@ import { Auth, GetUser } from '@modules/auth/decorators';
 import { usersSchema } from '@modules/auth/entities/user.entity';
 import { InferSelectModel } from 'drizzle-orm';
 import { SuccessResponseDto } from '@common/dto/success-response.dto';
-import { CreateProductDto, SearchProductsDto, UpdateProductDto } from '@/modules/product/dto';
+import {
+  CreateProductDto,
+  SearchProductsDto,
+  UpdateProductDto,
+} from '@/modules/product/dto';
 import { productsSchema } from '@modules/product/entities';
 import { ValidRoles } from '@modules/auth/interfaces';
 import { ProductImagesService } from '@modules/product-images/product-images.service';
@@ -46,7 +50,7 @@ export class ProductController {
   }
 
   @Get()
-  @Auth()
+  @Auth(ValidRoles.ADMIN)
   async findAll(
     @Query() paginationDto: PaginationDto,
   ): Promise<SuccessResponseDto> {
@@ -59,7 +63,7 @@ export class ProductController {
   }
 
   @Get('category/:categoryId')
-  @Auth()
+  @Auth(ValidRoles.ADMIN)
   async byCategory(
     @Query() paginationDto: PaginationDto,
     @Param('categoryId', ParseIntPipe) categoryId: number,
@@ -76,7 +80,7 @@ export class ProductController {
   }
 
   @Get(':id')
-  @Auth()
+  @Auth(ValidRoles.ADMIN)
   async findOne(@Param('id') id: string): Promise<SuccessResponseDto> {
     const product = await this.productService.findOne(id);
     const images = await this.productImagesService.findByProduct(id);
@@ -88,9 +92,8 @@ export class ProductController {
   }
 
   @Get('search')
-  async search(
-    @Query() query: SearchProductsDto,
-  ): Promise<SuccessResponseDto> {
+  @Auth(ValidRoles.ADMIN)
+  async search(@Query() query: SearchProductsDto): Promise<SuccessResponseDto> {
     const result = await this.productService.adminSearch(query);
     return {
       ok: true,
@@ -100,7 +103,7 @@ export class ProductController {
   }
 
   @Patch(':id')
-  @Auth()
+  @Auth(ValidRoles.ADMIN)
   async update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -118,7 +121,7 @@ export class ProductController {
   }
 
   @Patch('reassign-category/:categoryId')
-  @Auth()
+  @Auth(ValidRoles.ADMIN)
   async reassignProducts(
     @Param('categoryId', ParseIntPipe) oldCategoryId: number,
     @Body('newCategoryId', ParseIntPipe) newCategoryId: number,
@@ -137,7 +140,7 @@ export class ProductController {
   }
 
   @Delete(':id')
-  @Auth()
+  @Auth(ValidRoles.ADMIN)
   async remove(@Param('id') id: string): Promise<SuccessResponseDto> {
     await this.productService.remove(id);
     return {
