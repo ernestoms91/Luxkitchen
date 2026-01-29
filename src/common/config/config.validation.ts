@@ -36,5 +36,7 @@ export const validationSchema = Joi.object({
   S3_PUBLIC_URL: Joi.string().uri().required(),
   PRODUCT_IMAGES_MAX_COUNT: Joi.number().default(6),
   PRODUCT_IMAGE_MAX_SIZE: Joi.number().default(5 * 1024 * 1024), // 5MB
-  PRODUCT_IMAGE_ALLOWED_TYPES: Joi.string()
+  PRODUCT_IMAGE_ALLOWED_TYPES: Joi.string(),
+  CATEGORY_IMAGE_MAX_SIZE: Joi.number().default(5 * 1024 * 1024), // 5MB
+  CATEGORY_IMAGE_ALLOWED_TYPES: Joi.string(),
 });

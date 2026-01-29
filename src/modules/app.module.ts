@@ -11,6 +11,7 @@ import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
 import { StorageModule } from '@modules/storage/storage.module';
 import { ProductImagesModule } from '@modules/product-images/product-images.module';
 import { CatalogModule } from './catalog/catalog.module';
+import { CategoryImagesModule } from './category-images/category-images.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CatalogModule } from './catalog/catalog.module';
       // Validación de variables de entorno
       validationSchema,
     }),
+    CategoryImagesModule,
   ],
   providers: [HttpExceptionFilter, LoggingInterceptor],
 })

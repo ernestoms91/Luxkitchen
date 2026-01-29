@@ -12,6 +12,7 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import schema from '@/common/database/schemas';
 import { count, desc, eq, ilike, InferSelectModel, sql } from 'drizzle-orm';
 import { categoriesSchema } from '@modules/category/entities/category.entity';
+import { categoryImagesSchema } from '../category-images/entities/category-image.entity';
 
 type Category = InferSelectModel<typeof categoriesSchema>;
 @Injectable()
@@ -90,28 +91,36 @@ export class CategoryService {
   async findAll(pagination: FindCategoryDto) {
     const { limit = 10, offset = 0, parentId, search } = pagination;
 
-    // Construir la consulta base
     const query = this.database
-      .select()
+      .select({
+        id: schema.categories.id,
+        name: schema.categories.name,
+        description: schema.categories.description,
+        parentId: schema.categories.parentId,
+        isLeaf: schema.categories.isLeaf,
+        createdAt: schema.categories.createdAt,
+        imageUrl: categoryImagesSchema.url, // 👈 solo la URL
+      })
       .from(schema.categories)
+      .leftJoin(
+        categoryImagesSchema,
+        eq(categoryImagesSchema.categoryId, schema.categories.id),
+      )
       .limit(limit)
       .offset(offset)
       .orderBy(desc(schema.categories.createdAt));
 
-    // Agregar filtro por parentId (ver solo subcategorías de una categoría específica)
     if (parentId !== undefined) {
       query.where(eq(schema.categories.parentId, parentId));
     }
 
-    // Agregar búsqueda por nombre si viene el parámetro search
     if (search) {
       query.where(ilike(schema.categories.name, `%${search}%`));
     }
 
-    // Ejecutar la consulta principal
     const categories = await query.execute();
 
-    // Calcular total con mismos filtros (sin paginación)
+    // count
     const countQuery = this.database
       .select({ count: count() })
       .from(schema.categories);
@@ -134,8 +143,8 @@ export class CategoryService {
     };
   }
 
-  async findOne(id: number): Promise<Category> {
-    const [category] = (await this.database
+  async findOne(id: number) {
+    const [result] = await this.database
       .select({
         id: schema.categories.id,
         name: schema.categories.name,
@@ -144,16 +153,38 @@ export class CategoryService {
         isLeaf: schema.categories.isLeaf,
         isDeleted: schema.categories.isDeleted,
         createdAt: schema.categories.createdAt,
+        imageId: categoryImagesSchema.id,
+        imageUrl: categoryImagesSchema.url,
+        imageCreatedAt: categoryImagesSchema.createdAt,
       })
       .from(schema.categories)
+      .leftJoin(
+        categoryImagesSchema,
+        eq(categoryImagesSchema.categoryId, schema.categories.id),
+      )
       .where(eq(schema.categories.id, id))
-      .execute()) as Category[];
+      .execute();
 
-    if (!category) {
+    if (!result) {
       throw new NotFoundException(`Category with ID ${id} not found`);
     }
 
-    return category;
+    return {
+      id: result.id,
+      name: result.name,
+      description: result.description,
+      parentId: result.parentId,
+      isLeaf: result.isLeaf,
+      isDeleted: result.isDeleted,
+      createdAt: result.createdAt,
+      image: result.imageId
+        ? {
+            id: result.imageId,
+            url: result.imageUrl,
+            createdAt: result.imageCreatedAt,
+          }
+        : null,
+    };
   }
 
   async findByName(name: string) {
@@ -354,9 +385,9 @@ export class CategoryService {
   }
 
   async categoryExists(categoryId: number) {
-    const category = await this.database.query.categories.findFirst({
+    const category = (await this.database.query.categories.findFirst({
       where: eq(schema.categories.id, categoryId),
-    }) as Category | null;
+    })) as Category | null;
 
     if (!category) {
       throw new NotFoundException(`Category with ID ${categoryId} not found`);
